@@ -70,7 +70,7 @@ install_library_from_upstream() {
     echo "$upstream_name: installed $(basename "$source_path")"
 }
 
-add_submodule "https://github.com/micropython/micropython" "upstream/micropython"
+# add_submodule "https://github.com/micropython/micropython" "upstream/micropython"
 update_submodule "upstream/micropython" "master"
 cd upstream/micropython || exit
 git submodule update --init lib/mbedtls
@@ -81,12 +81,12 @@ cd - || exit
 echo ""
 echo "---"
 
-add_submodule "https://github.com/micropython/micropython-lib" "upstream/micropython-lib"
+# add_submodule "https://github.com/micropython/micropython-lib" "upstream/micropython-lib"
 update_submodule "upstream/micropython-lib" "master"
 echo ""
 echo "---"
 
-add_submodule "https://github.com/miguelgrinberg/microdot" "upstream/microdot"
+# add_submodule "https://github.com/miguelgrinberg/microdot" "upstream/microdot"
 update_submodule "upstream/microdot" "main"
 echo ""
 echo "---"
