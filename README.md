@@ -25,7 +25,6 @@ sh tools/setup.sh
 sh tools/build.sh
 ```
 
-
 ### Run
 
 ```console
