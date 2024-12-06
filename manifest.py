@@ -4,4 +4,4 @@ require("mip-cmdline")
 require("ssl")
 
 include("lib")
-include("main.py")
+module("main.py")
