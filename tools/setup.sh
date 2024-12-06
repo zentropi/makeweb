@@ -72,6 +72,12 @@ install_library_from_upstream() {
 
 add_submodule "https://github.com/micropython/micropython" "upstream/micropython"
 update_submodule "upstream/micropython" "master"
+cd upstream/micropython || exit
+git submodule update --init lib/mbedtls
+git submodule update --init lib/berkeley-db-1.xx
+git submodule update --init lib/micropython-lib
+cd - || exit
+
 echo ""
 echo "---"
 
