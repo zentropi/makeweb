@@ -1,0 +1,9 @@
+[submodule "upstream/micropython"]
+	path = upstream/micropython
+	url = https://github.com/micropython/micropython
+[submodule "upstream/micropython-lib"]
+	path = upstream/micropython-lib
+	url = https://github.com/micropython/micropython-lib
+[submodule "upstream/microdot"]
+	path = upstream/microdot
+	url = https://github.com/miguelgrinberg/microdot
