@@ -13,5 +13,5 @@ def index(request):
 
 
 if __name__ == "__main__":
-    print("Running on http://localhost:5000")
-    app.run(port=5000)
+    print("Running on http://localhost:8000")
+    app.run(port=8000)
