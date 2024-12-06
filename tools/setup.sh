@@ -57,15 +57,15 @@ ensure_lib_dir() {
 install_library_from_upstream() {
     upstream_name="$1"
     source_path="$2"
-    
+
     if [ -z "$upstream_name" ] || [ -z "$source_path" ]; then
         echo "Usage: install_library_from_upstream <upstream_name> <source_path>"
         return 1
     fi
-    
+
     ensure_lib_dir
     source_path="upstream/$upstream_name/$source_path"
-    
+
     cp -r "$source_path" "lib/" 2>/dev/null || echo "Failed to copy $source_path"
     echo "$upstream_name: installed $(basename "$source_path")"
 }
