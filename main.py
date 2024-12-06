@@ -12,5 +12,6 @@ def index(request):
     return "Hello, World!"
 
 
-print("Running on http://localhost:5000")
-app.run(port=5000)
+if __name__ == "__main__":
+    print("Running on http://localhost:5000")
+    app.run(port=5000)
