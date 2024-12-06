@@ -4,4 +4,4 @@
 #
 
 cd upstream/micropython/ports/unix &&
-    make clean || exit
+    gmake clean || exit
