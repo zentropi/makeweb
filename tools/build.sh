@@ -15,14 +15,13 @@ build_lib_manifest() {
 
 build_lib_manifest
 
-makeweb_binary_name="makeweb"
 manifest_path="$(pwd)/manifest.py"
-makeweb_binary_path="$(pwd)/$makeweb_binary_name"
+makeweb_binary_path="$(pwd)/makeweb"
 
 # Build mpy-cross
 echo "Building mpy-cross..."
 cd upstream/micropython/mpy-cross &&
-    make || exit
+    gmake || exit
 
 # Return to project root
 cd - >/dev/null || exit
@@ -30,15 +29,12 @@ cd - >/dev/null || exit
 # Build MakeWeb binary
 echo "Building MakeWeb binary..."
 cd upstream/micropython/ports/unix &&
-    make FROZEN_MANIFEST="$manifest_path" CFLAGS_EXTRA="-Wno-error -g" LDFLAGS_EXTRA="-lpthread -ldl" || exit
+    gmake FROZEN_MANIFEST="$manifest_path" CFLAGS_EXTRA="-Wno-error -g" || exit
 
 # Return to project root
 cd - >/dev/null || exit
 
 # Copy MakeWeb binary to project root
-cp upstream/micropython/ports/unix/build-standard/micropython "$makeweb_binary_path"
-
-# Set MakeWeb binary as executable
-chmod +x "$makeweb_binary_path"
+cp upstream/micropython/ports/unix/build-standard/micropython "$makeweb_binary_path" || exit
 
 echo "MakeWeb binary built successfully at $makeweb_binary_path"
