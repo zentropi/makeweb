@@ -24,3 +24,10 @@ sh tools/setup.sh
 ```console
 sh tools/build.sh
 ```
+
+
+### Run
+
+```console
+./makeweb main.py
+```
