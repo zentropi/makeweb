@@ -70,8 +70,8 @@ install_library_from_upstream() {
     echo "$upstream_name: installed $(basename "$source_path")"
 }
 
-# add_submodule "https://github.com/micropython/micropython" "upstream/micropython"
-update_submodule "upstream/micropython" "master"
+git submodule update --init upstream/micropython
+
 cd upstream/micropython || exit
 git submodule update --init lib/mbedtls
 git submodule update --init lib/berkeley-db-1.xx
@@ -81,13 +81,11 @@ cd - || exit
 echo ""
 echo "---"
 
-# add_submodule "https://github.com/micropython/micropython-lib" "upstream/micropython-lib"
-update_submodule "upstream/micropython-lib" "master"
+git submodule update --init upstream/micropython-lib
 echo ""
 echo "---"
 
-# add_submodule "https://github.com/miguelgrinberg/microdot" "upstream/microdot"
-update_submodule "upstream/microdot" "main"
+git submodule update --init upstream/microdot
 echo ""
 echo "---"
 
