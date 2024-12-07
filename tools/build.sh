@@ -55,3 +55,4 @@ cd - >/dev/null || exit
 cp upstream/micropython/ports/unix/build-standard/micropython "$makeweb_binary_path" || exit
 
 echo "MakeWeb binary built successfully at $makeweb_binary_path"
+echo "Binary size: $(du -k "$makeweb_binary_path" | cut -f1) KB"
