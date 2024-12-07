@@ -63,6 +63,7 @@ install_library_from_upstream "micropython-lib" "python-stdlib/datetime/datetime
 install_library_from_upstream "micropython-lib" "python-stdlib/hmac/hmac.py"
 # install_library_from_upstream "micropython-lib" "python-stdlib/os/os"
 install_library_from_upstream "micropython-lib" "python-stdlib/os-path/os"
+install_library_from_upstream "micropython-lib" "python-stdlib/stat/stat.py"
 install_library_from_upstream "micropython-lib" "python-stdlib/time/time.py"
 install_library_from_upstream "micropython-lib" "python-stdlib/unittest/unittest"
 install_library_from_upstream "micropython-lib" "python-stdlib/unittest-discover/unittest"
