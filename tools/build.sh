@@ -34,6 +34,11 @@ build_lib_manifest
 
 manifest_path="$(pwd)/manifest.py"
 makeweb_binary_path=~/bin/makeweb
+# Get original binary size before building (if exists)
+original_size=0
+if [ -f "$makeweb_binary_path" ]; then
+    original_size=$(du -k "$makeweb_binary_path" | cut -f1)
+fi
 
 # Build mpy-cross
 echo "Building mpy-cross..."
@@ -54,5 +59,18 @@ cd - >/dev/null || exit
 # Copy MakeWeb binary to project root
 cp upstream/micropython/ports/unix/build-standard/micropython "$makeweb_binary_path" || exit
 
+# Compare and display size difference
+new_size=$(du -k "$makeweb_binary_path" | cut -f1)
 echo "MakeWeb binary built successfully at $makeweb_binary_path"
-echo "Binary size: $(du -k "$makeweb_binary_path" | cut -f1) KB"
+if [ $original_size -eq 0 ]; then
+    echo "Binary size: $new_size KB (new file)"
+else
+    size_diff=$((new_size - original_size))
+    if [ $size_diff -gt 0 ]; then
+        echo "Binary size: $new_size KB (increased by $size_diff KB)"
+    elif [ $size_diff -lt 0 ]; then
+        echo "Binary size: $new_size KB (decreased by $((-size_diff)) KB)"
+    else
+        echo "Binary size: $new_size KB (unchanged)"
+    fi
+fi
