@@ -135,6 +135,17 @@ class TestDictDB(unittest.TestCase):
         # Verify the value was not changed
         self.assertEqual(self.db['test_key'], 'initial')
         
+    def test_get_method(self):
+        # Test existing key
+        self.db['test'] = 'value'
+        self.assertEqual(self.db.get('test'), 'value')
+        
+        # Test non-existing key with default
+        self.assertEqual(self.db.get('nonexistent', 'default'), 'default')
+        
+        # Test non-existing key without default
+        self.assertIsNone(self.db.get('nonexistent'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -112,3 +112,9 @@ class DictDB:
         flags = btree.INCL if incl else 0
         for value in self._db.values(start, end, flags):
             yield json.loads(value.decode())
+
+    def get(self, key: str, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
