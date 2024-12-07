@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 
 makeweb/manifest.py
+guestbook.db
