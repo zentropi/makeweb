@@ -60,6 +60,8 @@ echo ""
 
 echo "micropython-lib/python-stdlib"
 install_library_from_upstream "micropython-lib" "python-stdlib/datetime/datetime.py"
+install_library_from_upstream "micropython-lib" "python-stdlib/fnmatch/fnmatch.py"
+install_library_from_upstream "micropython-lib" "python-stdlib/functools/functools.py"
 install_library_from_upstream "micropython-lib" "python-stdlib/hmac/hmac.py"
 # install_library_from_upstream "micropython-lib" "python-stdlib/os/os"
 install_library_from_upstream "micropython-lib" "python-stdlib/os-path/os"
