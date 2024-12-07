@@ -1,0 +1,65 @@
+--- upstream/micropython/ports/unix/mpthreadport.c	2024-12-07 01:51:56.462319154 +0530
++++ /home/harshad/src/makeweb/tools/android-mpthreadport.c	2024-12-07 13:32:56.174568092 +0530
+@@ -45,8 +45,14 @@
+ // potential conflict with other uses of the more commonly used SIGUSR1.
+ #ifdef SIGRTMIN
+ #define MP_THREAD_GC_SIGNAL (SIGRTMIN + 5)
++#ifdef __ANDROID__
++#define MP_THREAD_TERMINATE_SIGNAL (SIGRTMIN + 6)
++#endif
+ #else
+ #define MP_THREAD_GC_SIGNAL (SIGUSR1)
++#ifdef __ANDROID__
++#define MP_THREAD_TERMINATE_SIGNAL (SIGUSR2)
++#endif
+ #endif
+ 
+ // This value seems to be about right for both 32-bit and 64-bit builds.
+@@ -77,6 +83,12 @@
+ static sem_t thread_signal_done;
+ #endif
+ 
++#if defined(__ANDROID__)
++void signal_handler(int signal) {
++    pthread_exit(0);
++}
++#endif
++
+ void mp_thread_unix_begin_atomic_section(void) {
+     pthread_mutex_lock(&thread_mutex);
+ }
+@@ -138,6 +150,12 @@
+     sa.sa_sigaction = mp_thread_gc;
+     sigemptyset(&sa.sa_mask);
+     sigaction(MP_THREAD_GC_SIGNAL, &sa, NULL);
++    #if defined(__ANDROID__)
++    sa.sa_flags = 0;
++    sa.sa_handler = signal_handler;
++    sigemptyset(&sa.sa_mask);
++    sigaction(MP_THREAD_TERMINATE_SIGNAL, &sa, NULL);
++    #endif
+ }
+ 
+ void mp_thread_deinit(void) {
+@@ -145,7 +163,11 @@
+     while (thread->next != NULL) {
+         mp_thread_t *th = thread;
+         thread = thread->next;
++        #if defined(__ANDROID__)
++        pthread_kill(th->id, MP_THREAD_TERMINATE_SIGNAL);
++        #else
+         pthread_cancel(th->id);
++        #endif
+         free(th);
+     }
+     mp_thread_unix_end_atomic_section();
+@@ -203,7 +225,9 @@
+     }
+     #endif
+ 
++    #if !defined(__ANDROID__)
+     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
++    #endif
+     mp_thread_unix_begin_atomic_section();
+     for (mp_thread_t *th = thread; th != NULL; th = th->next) {
+         if (th->id == pthread_self()) {
