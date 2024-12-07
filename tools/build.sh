@@ -20,20 +20,24 @@ get_make_command() {
 
 MAKE_CMD=$(get_make_command)
 
-build_lib_manifest() {
-    # Create lib manifest file
-    echo "Creating lib manifest file..."
+build_manifest() {
+    dir=$1
+    output_file="$dir/manifest.py"
+
+    echo "Creating $dir manifest file..."
 
     # A little dance to avoid including the manifest file itself.
-    rm -f lib/manifest.py
-    find lib -name "*.py" | sed 's|^lib/||' | awk '{print "module(\"" $1 "\")"}' >lib_manifest.py
-    mv lib_manifest.py lib/manifest.py
+    rm -f "$output_file"
+    find "$dir" -name "*.py" | sed "s|^$dir/||" | awk '{print "module(\"" $1 "\")"}' >"${dir}_manifest.py"
+    mv "${dir}_manifest.py" "$output_file"
 }
 
-build_lib_manifest
+build_manifest "lib"
+build_manifest "makeweb"
 
 manifest_path="$(pwd)/manifest.py"
 makeweb_binary_path=~/bin/makeweb
+
 # Get original binary size before building (if exists)
 original_size=0
 if [ -f "$makeweb_binary_path" ]; then
