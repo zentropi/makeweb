@@ -1,6 +1,6 @@
 import unittest
 import os
-from makeweb.dictdb import DictDB
+from makeweb import DictDB
 
 class TestDictDB(unittest.TestCase):
     def setUp(self):
