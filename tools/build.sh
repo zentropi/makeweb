@@ -33,7 +33,7 @@ build_lib_manifest() {
 build_lib_manifest
 
 manifest_path="$(pwd)/manifest.py"
-makeweb_binary_path="$(pwd)/makeweb"
+makeweb_binary_path=~/bin/makeweb
 
 # Build mpy-cross
 echo "Building mpy-cross..."
