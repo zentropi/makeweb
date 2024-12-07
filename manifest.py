@@ -4,4 +4,5 @@ require("mip-cmdline")
 require("ssl")
 
 include("lib")
+include("makeweb")
 module("main.py")
