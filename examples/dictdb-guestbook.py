@@ -1,7 +1,4 @@
-import sys
 import time  # type: ignore
-
-sys.path.append("lib")
 from makeweb import App, DictDB
 
 app = App()
@@ -13,7 +10,8 @@ def render_entry(timestamp, name, message):
     with app.html_fragment("div", cls="entry") as entry:
         entry.strong(name)
         entry.p(message)
-        entry.small(date_str)
+        with entry.small():
+            entry.time(date_str, datetime=str(timestamp))
     return entry
 
 
@@ -24,14 +22,17 @@ def render_page(entries):
             doc.title("Guestbook")
             doc.style(
                 """
-                body { max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; }
-                .entry { border-bottom: 1px solid #ccc; padding: 10px 0; }
-                .entry strong { font-size: 1.2em; }
-                .entry p { margin: 5px 0; }
+                :root { font-size: 16px; }
+                * { box-sizing: border-box; }
+                body { max-width: 46rem; margin: 0 auto; padding: 2rem; font-family: sans-serif; }
+                .entry { border-bottom: 1px solid #ccc; padding: 1rem 0; }
+                .entry strong { font-size: 1.2rem; }
+                .entry p { margin: 1rem 0; }
                 .entry small { color: #666; }
-                form { margin: 20px 0; }
-                input, textarea { margin: 5px 0; padding: 5px; width: 100%; }
-                button { padding: 10px; }
+                form { margin: 3rem 0; }
+                input, textarea { margin: 1rem 0; padding: .75rem; width: 100%; }
+                textarea { min-height: 8rem; }
+                button { padding: 1rem; margin: 1rem 0; background-color: #007bff; color: white; border: none; }
             """
             )
         with doc.body():
