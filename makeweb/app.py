@@ -3,12 +3,14 @@ from makeweb.html import Html, HtmlFragment
 
 
 class App(Microdot):
-    def response(self, content, status_code=200, headers=None):
+    def response(self, content, status_code=200, headers=None, reason=None):
         """Create a new response."""
         headers = headers or {"Content-Type": "text/html"}
         if isinstance(content, Html):
             content = content.render()
-        return Response(content, status_code=status_code, headers=headers)
+        return Response(
+            content, status_code=status_code, headers=headers, reason=reason
+        )
 
     def html(self, **attrs):
         """Create a new HTML document."""
