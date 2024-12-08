@@ -1,4 +1,4 @@
-from microdot import Microdot, Response, send_file
+from microdot import Microdot, Response, send_file, redirect
 from makeweb.html import Html, HtmlFragment
 
 
@@ -11,6 +11,14 @@ class App(Microdot):
         return Response(
             content, status_code=status_code, headers=headers, reason=reason
         )
+    
+    def send_file(self, path, **kwargs):
+        """Send a file."""
+        return send_file(path, **kwargs)
+    
+    def redirect(self, location, status_code=302):
+        """Redirect to a new location."""
+        return redirect(location, status_code=status_code)
 
     def html(self, **attrs):
         """Create a new HTML document."""
