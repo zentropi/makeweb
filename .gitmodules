@@ -7,3 +7,6 @@
 [submodule "upstream/microdot"]
 	path = upstream/microdot
 	url = https://github.com/miguelgrinberg/microdot
+[submodule "upstream/udownmark"]
+	path = upstream/udownmark
+	url = https://github.com/pfalcon/udownmark.git

@@ -48,6 +48,9 @@ git submodule update --init upstream/micropython-lib
 
 echo "Updating submodule: upstream/microdot"
 git submodule update --init upstream/microdot
+
+echo "Updating submodule: upstream/udownmark"
+git submodule update --init upstream/udownmark
 echo "---"
 
 # Install libraries
@@ -78,6 +81,10 @@ echo ""
 
 echo "microdot"
 install_library_from_upstream "microdot" "src/microdot"
+echo ""
+
+echo "udownmark"
+install_library_from_upstream "udownmark" "udownmark.py"
 echo ""
 
 echo "Done."
