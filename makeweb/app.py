@@ -16,6 +16,10 @@ class App(Microdot):
         """Create a new HTML document."""
         return Html(**attrs)
 
+    def html_fragment(self, tag, **attrs):
+        """Create a new HTML fragment."""
+        return HtmlFragment(tag, **attrs)
+
     def run(self, host="0.0.0.0", port=8000, debug=False, ssl=None):
         """Run the application."""
         print(f"Running on http://localhost:{port}")
