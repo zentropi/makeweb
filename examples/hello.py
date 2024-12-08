@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append("lib")
-from microdot import Microdot
+from microdot import Microdot, Response
 
 
 app = Microdot()
@@ -9,7 +9,7 @@ app = Microdot()
 
 @app.route("/")
 def index(request):
-    return "Hello, World!"
+    return Response("Hello, World!")
 
 
 if __name__ == "__main__":
