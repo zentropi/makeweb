@@ -5,6 +5,7 @@ require("ssl")
 
 include("lib")
 module("makeweb/__init__.py")
+module("makeweb/app.py")
 module("makeweb/constants.py")
 module("makeweb/dictdb.py")
 module("makeweb/html.py")
