@@ -10,3 +10,6 @@
 [submodule "upstream/udownmark"]
 	path = upstream/udownmark
 	url = https://github.com/pfalcon/udownmark.git
+[submodule "upstream/websockets"]
+	path = upstream/websockets
+	url = https://github.com/marcidy/micropython-uasyncio-websockets.git

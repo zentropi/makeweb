@@ -51,6 +51,9 @@ git submodule update --init upstream/microdot
 
 echo "Updating submodule: upstream/udownmark"
 git submodule update --init upstream/udownmark
+
+echo "Updating submodule: upstream/websockets"
+git submodule update --init upstream/websockets
 echo "---"
 
 # Install libraries
@@ -87,6 +90,11 @@ echo ""
 
 echo "udownmark"
 install_library_from_upstream "udownmark" "udownmark.py"
+echo ""
+
+echo "websockets"
+cp -r "upstream/websockets" "lib/" 2>/dev/null || echo "Failed to copy to lib/websockets"
+echo "  websockets"
 echo ""
 
 echo "Done."
