@@ -1,8 +1,5 @@
-import sys
 import os
 import json
-
-sys.path.append("lib")
 from microdot import Microdot, Response, redirect
 
 app = Microdot()
