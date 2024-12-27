@@ -3,18 +3,23 @@ from makeweb import App, DictDB
 app = App()
 db = DictDB("todo.db")
 
+
 def render_todo(todo_id, todo):
     with app.html_fragment("div", cls="todo-item") as item:
         with item.form(method="POST", action=f"/toggle/{todo_id}", cls="toggle-form"):
             item.input(
                 type="checkbox",
                 checked=todo.get("completed", False),
-                onchange="this.form.submit()"
+                onchange="this.form.submit()",
             )
-            item.span(todo["text"], cls="todo-text" + (" completed" if todo.get("completed") else ""))
+            item.span(
+                todo["text"],
+                cls="todo-text" + (" completed" if todo.get("completed") else ""),
+            )
         with item.form(method="POST", action=f"/delete/{todo_id}", cls="delete-form"):
             item.button("Delete", type="submit", cls="delete-btn")
     return item
+
 
 def render_page(todos):
     doc = app.html(lang="en")
@@ -23,7 +28,8 @@ def render_page(todos):
             doc.title("Todo List")
             doc.meta(charset="utf-8")
             doc.meta(name="viewport", content="width=device-width, initial-scale=1")
-            doc.style("""
+            doc.style(
+                """
                 :root { font-size: 16px; }
                 * { box-sizing: border-box; }
                 body { max-width: 40rem; margin: 0 auto; padding: 1rem; font-family: sans-serif; }
@@ -41,13 +47,19 @@ def render_page(todos):
                     .todo-input, .add-btn, .delete-btn { width: 100%; }
                     .toggle-form { flex: 1 1 auto; min-width: 200px; }
                 }
-            """)
+            """
+            )
         with doc.body():
             doc.h1("Todo List")
-            
+
             with doc.form(method="POST", action="/add", cls="todo-form"):
-                doc.input(type="text", name="todo", placeholder="Add a new todo", 
-                         required=True, cls="todo-input")
+                doc.input(
+                    type="text",
+                    name="todo",
+                    placeholder="Add a new todo",
+                    required=True,
+                    cls="todo-input",
+                )
                 doc.button("Add", type="submit", cls="add-btn")
 
             for todo_id, todo in todos:
@@ -55,14 +67,16 @@ def render_page(todos):
 
     return app.response(doc)
 
+
 @app.route("/")
 def index(request):
     todos = sorted(
         [(k, v) for k, v in db.items() if k != "counter"],
         key=lambda x: x[0],
-        reverse=True
+        reverse=True,
     )
     return render_page(todos)
+
 
 @app.route("/add", methods=["POST"])
 def add_todo(request):
@@ -74,6 +88,7 @@ def add_todo(request):
         db[f"{counter:06d}"] = {"text": todo_text, "completed": False}
     return app.redirect("/")
 
+
 @app.route("/toggle/<todo_id>", methods=["POST"])
 def toggle_todo(request, todo_id):
     if todo_id in db:
@@ -82,12 +97,13 @@ def toggle_todo(request, todo_id):
         db[todo_id] = todo
     return app.redirect("/")
 
+
 @app.route("/delete/<todo_id>", methods=["POST"])
 def delete_todo(request, todo_id):
     if todo_id in db:
         del db[todo_id]
     return app.redirect("/")
 
+
 if __name__ == "__main__":
     app.run(port=8000)
-
