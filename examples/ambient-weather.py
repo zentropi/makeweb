@@ -9,29 +9,28 @@ app.data = None
 
 class WeatherFromStation:
     def __init__(self, **kwargs):
-        self.weeklyrainin = kwargs.get("weeklyrainin")
-        self.dateutc = kwargs.get("dateutc")
-        self.PASSKEY = kwargs.get("PASSKEY")
-        self.windgustmph = kwargs.get("windgustmph")
-        self.eventrainin = kwargs.get("eventrainin")
-        self.tempf = kwargs.get("tempf")
-        self.hourlyrainin = kwargs.get("hourlyrainin")
-        self.humidity = kwargs.get("humidity")
-        self.dailyrainin = kwargs.get("dailyrainin")
-        self.maxdailygust = kwargs.get("maxdailygust")
-        self.totalrainin = kwargs.get("totalrainin")
-        self.tempinf = kwargs.get("tempinf")
-        self.baromrelin = kwargs.get("baromrelin")
-        self.baromabsin = kwargs.get("baromabsin")
-        self.monthlyrainin = kwargs.get("monthlyrainin")
-        self.stationtype = kwargs.get("stationtype")
-        self.uv = kwargs.get("uv")
-        self.battout = kwargs.get("battout")
-        self.winddir = kwargs.get("winddir")
-        self.solarradiation = kwargs.get("solarradiation")
-        self.humidityin = kwargs.get("humidityin")
-        self.windspeedmph = kwargs.get("windspeedmph")
-        self.yearlyrainin = kwargs.get("yearlyrainin")
+        self.weeklyrainin = kwargs.get("weeklyrainin", 0.0)
+        self.dateutc = kwargs.get("dateutc", "unknown")
+        self.windgustmph = kwargs.get("windgustmph", 0.0)
+        self.eventrainin = kwargs.get("eventrainin", 0.0)
+        self.tempf = kwargs.get("tempf", 32.0)
+        self.hourlyrainin = kwargs.get("hourlyrainin", 0.0)
+        self.humidity = kwargs.get("humidity", 0.0)
+        self.dailyrainin = kwargs.get("dailyrainin", 0.0)
+        self.maxdailygust = kwargs.get("maxdailygust", 0.0)
+        self.totalrainin = kwargs.get("totalrainin", 0.0)
+        self.tempinf = kwargs.get("tempinf", 32.0)
+        self.baromrelin = kwargs.get("baromrelin", 0.0)
+        self.baromabsin = kwargs.get("baromabsin", 0.0)
+        self.monthlyrainin = kwargs.get("monthlyrainin", 0.0)
+        self.stationtype = kwargs.get("stationtype", "unknown")
+        self.uv = kwargs.get("uv", 0)
+        self.battout = kwargs.get("battout", 0)
+        self.winddir = kwargs.get("winddir", 0.0)
+        self.solarradiation = kwargs.get("solarradiation", 0.0)
+        self.humidityin = kwargs.get("humidityin", 0.0)
+        self.windspeedmph = kwargs.get("windspeedmph", 0.0)
+        self.yearlyrainin = kwargs.get("yearlyrainin", 0.0)
 
 
 class Weather:
@@ -376,4 +375,5 @@ def index(doc, request):
 
 
 if __name__ == "__main__":
+    app.data = Weather(WeatherFromStation())
     app.run()
