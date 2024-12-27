@@ -28,7 +28,7 @@ import json
 
 class DictDB:
     """A persistent dictionary implementation using BTrees.
-    
+
     DictDB provides a dict-like interface to a persistent BTree database.
     It supports all standard dictionary operations plus range queries and
     automatic transaction handling via context manager protocol.
