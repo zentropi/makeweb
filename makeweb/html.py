@@ -1,5 +1,6 @@
 from .constants import html as html_constants
-from textwrap import dedent
+from textwrap import dedent  # type: ignore
+
 
 class Element:
     def _normalize_attrs(self, attrs):
@@ -12,12 +13,10 @@ class Element:
         return normalized
 
     def __init__(self, tag, parent=None, **attrs):
-        # Special case for internal tags
-        if tag != "_fragment":  # Add this check
-            if tag in html_constants.deprecated_tags:
-                raise ValueError(f"{tag} is deprecated")
-            if tag not in html_constants.tags and tag != "html":
-                raise ValueError(f"{tag} is not a valid HTML tag")
+        if tag in html_constants.deprecated_tags:
+            raise ValueError(f"{tag} is deprecated")
+        if tag not in html_constants.tags and tag != "html":
+            raise ValueError(f"{tag} is not a valid HTML tag")
 
         self.tag = tag
         self.parent = parent
