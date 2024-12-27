@@ -1,5 +1,6 @@
 from .constants import html as html_constants
 from textwrap import dedent  # type: ignore
+from .sparkline import create_sparkline
 
 
 class Element:
@@ -132,6 +133,12 @@ class HtmlBuilder:
 
         md = Markdown.parse(text)
         self.add_child(md)
+        return self
+
+    def sparkline(self, data: list[float], **kwargs):
+        """Add a sparkline chart"""
+        svg = create_sparkline(data, **kwargs)
+        self.current.add_child(svg)
         return self
 
     def __enter__(self):

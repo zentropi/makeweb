@@ -33,11 +33,50 @@ class WeatherFromStation:
         self.yearlyrainin = kwargs.get("yearlyrainin", 0.0)
 
 
+class WeatherHistory:
+    """Store historical weather data with a fixed length."""
+
+    def __init__(self, max_length: int = 60):
+        self.max_length = max_length
+        self.values: list[float] = []
+
+    def add(self, value: float):
+        self.values.append(value)
+        if len(self.values) > self.max_length:
+            self.values.pop(0)
+
+
 class Weather:
     """Converts WeatherFromStation to metric units with humanized output."""
 
     def __init__(self, data: WeatherFromStation):
         self.data = data
+        # Initialize history tracking
+        self.temp_history = WeatherHistory()
+        self.wind_speed_history = WeatherHistory()
+        self.pressure_history = WeatherHistory()
+        self.humidity_history = WeatherHistory()
+        # Update histories
+        self._update_histories()
+
+    def _update_histories(self):
+        """Update historical data."""
+        self.temp_history.add(self._to_celsius(self.data.tempf))
+        self.wind_speed_history.add(self._to_kmph(self.data.windspeedmph))
+        self.pressure_history.add(self._to_hpa(self.data.baromrelin))
+        self.humidity_history.add(float(self.data.humidity))
+
+    def _to_celsius(self, f: float) -> float:
+        """Convert Fahrenheit to Celsius."""
+        return (float(f) - 32) * 5 / 9
+
+    def _to_kmph(self, mph: float) -> float:
+        """Convert mph to km/h."""
+        return float(mph) * 1.60934
+
+    def _to_hpa(self, inhg: float) -> float:
+        """Convert inHg to hPa."""
+        return float(inhg) * 33.8639
 
     def fahrenheit_to_celsius(self, f: float) -> str:
         """Convert Fahrenheit to Celsius."""
@@ -184,9 +223,13 @@ class Weather:
 @app.route("/data")
 def recv(request):
     weather_from_station = WeatherFromStation(**request.args)
-    weather = Weather(weather_from_station)
-    print("Received weather data for:", weather.timestamp)
-    app.data = weather
+    if app.data is None:
+        app.data = Weather(weather_from_station)
+    else:
+        # Update existing weather object to maintain history
+        app.data.data = weather_from_station
+        app.data._update_histories()
+    print("Received weather data for:", app.data.timestamp)
     return "OK\n"
 
 
@@ -194,13 +237,25 @@ def recv(request):
 def index(doc, _request):
     data = app.data
 
-    def render_card(title: str, items: dict):
+    def render_card(
+        title: str, items: dict, sparkline: tuple[list[float], dict] = None
+    ):
         with doc.div(cls="section"):
             doc.h2(title)
             for label, value in items.items():
                 with doc.p():
                     doc.span(label, cls="label")
-                    doc.span(value, cls="value")
+                    with doc.span(cls="value-container"):
+                        if sparkline and label == sparkline[1].get("label"):
+                            doc.sparkline(
+                                sparkline[0],
+                                **{
+                                    k: v
+                                    for k, v in sparkline[1].items()
+                                    if k != "label"
+                                },
+                            )
+                        doc.span(value, cls="value")
 
     with doc:
         with doc.head():
@@ -349,6 +404,18 @@ def index(doc, _request):
                         grid-template-columns: repeat(3, 1fr);
                     }
                 }
+
+                /* Add to existing CSS */
+                .value-container {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    justify-content: flex-end;
+                }
+
+                .sparkline {
+                    opacity: 0.8;
+                }
                 """
             )
         with doc.body():
@@ -363,7 +430,12 @@ def index(doc, _request):
 
             with doc.main():
                 render_card(
-                    "Temperature", {"Outdoor": data.temp, "Indoor": data.temp_indoor}
+                    "Temperature",
+                    {"Outdoor": data.temp, "Indoor": data.temp_indoor},
+                    (
+                        data.temp_history.values,
+                        {"label": "Outdoor", "line_color": "#ff7c7c"},
+                    ),
                 )
 
                 render_card(
@@ -374,11 +446,19 @@ def index(doc, _request):
                         "Direction": f"{data.wind_dir}°",
                         "Max gust": data.max_daily_gust,
                     },
+                    (
+                        data.wind_speed_history.values,
+                        {"label": "Speed", "line_color": "#7cb5ff"},
+                    ),
                 )
 
                 render_card(
                     "Pressure",
                     {"Relative": data.pressure, "Absolute": data.pressure_absolute},
+                    (
+                        data.pressure_history.values,
+                        {"label": "Relative", "line_color": "#7cff7c"},
+                    ),
                 )
 
                 render_card(
