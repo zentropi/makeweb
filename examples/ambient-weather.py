@@ -185,9 +185,7 @@ class Weather:
 def recv(request):
     weather_from_station = WeatherFromStation(**request.args)
     weather = Weather(weather_from_station)
-    print("Temperature (outdoor):", weather.temp)
-    print("Temperature (indoor):", weather.temp_indoor)
-    print("Timestamp:", weather.timestamp)
+    print("Received weather data for:", weather.timestamp)
     app.data = weather
     return "OK\n"
 
@@ -195,6 +193,15 @@ def recv(request):
 @app.page("/")
 def index(doc, request):
     data = app.data
+
+    def render_card(title: str, items: dict):
+        with doc.div(cls="section"):
+            doc.h2(title)
+            for label, value in items.items():
+                with doc.p():
+                    doc.span(label, cls="label")
+                    doc.span(value, cls="value")
+
     with doc:
         with doc.head():
             doc.meta(charset="utf-8")
@@ -202,8 +209,8 @@ def index(doc, request):
             doc.title("Weather")
             doc.style(
                 """
+                /* Base styles and variables */
                 :root {
-                    font-size: 16px;
                     --primary: #007bff;
                     --secondary: #6c757d;
                     --success: #28a745;
@@ -212,55 +219,72 @@ def index(doc, request):
                     --danger: #dc3545;
                     --light: #f8f9fa;
                     --dark: #343a40;
+                    font-size: 16px;
                 }
+
+                /* Reset and box model */
                 *, *::before, *::after {
                     box-sizing: border-box;
                     margin: 0;
                     padding: 0;
                 }
+
+                /* Layout */
                 body { 
-                    font-size: 1rem;
-                    font-family: sans-serif;
                     width: 100%;
                     max-width: 1200px;
                     margin: 0 auto;
                     padding: 1rem;
                     background-color: var(--light);
+                }
+
+                main {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                    width: 100%;
+                }
+
+                /* Typography */
+                body {
+                    font-size: 1rem;
+                    font-family: sans-serif;
                     color: var(--dark);
                 }
+
+                /* Components */
                 header {
                     margin-bottom: 2rem;
+                    padding-bottom: 1rem;
                     border-bottom: 1px solid #ddd;
                     display: flex;
                     justify-content: space-between;
                     align-items: baseline;
-                    padding-bottom: 1rem;
                 }
+
                 header h1 {
                     font-size: 2rem;
                     color: var(--primary);
                 }
+
                 header span {
                     font-size: 0.9rem;
                     color: var(--secondary);
                 }
-                main {
-                    display: grid;
-                    grid-template-columns: 1fr;  /* Single column by default */
-                    gap: 1.5rem;
-                    width: 100%;
-                }
+
                 .section {
                     background: white;
                     padding: 1.5rem;
                     border-radius: 8px;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }
+
                 .section h2 {
                     color: var(--primary);
                     margin-bottom: 1rem;
                     font-size: 1.4rem;
                 }
+
                 .section p {
                     display: flex;
                     justify-content: space-between;
@@ -268,15 +292,19 @@ def index(doc, request):
                     padding: 0.5rem 0;
                     border-bottom: 1px solid #eee;
                 }
+
                 .section p:last-child {
                     border-bottom: none;
                 }
+
                 .label {
                     color: var(--secondary);
                 }
+
                 .value {
                     font-weight: 500;
                 }
+
                 footer {
                     margin-top: 2rem;
                     padding-top: 1rem;
@@ -285,7 +313,8 @@ def index(doc, request):
                     color: var(--secondary);
                     font-size: 0.9rem;
                 }
-                /* Tablet and desktop screens */
+
+                /* Responsive */
                 @media (min-width: 768px) {
                     body {
                         padding: 2rem;
@@ -307,71 +336,46 @@ def index(doc, request):
                     doc.span(data.station_type)
 
             with doc.main():
-                with doc.div(cls="section"):
-                    doc.h2("Temperature")
-                    with doc.p():
-                        doc.span("Outdoor", cls="label")
-                        doc.span(data.temp, cls="value")
-                    with doc.p():
-                        doc.span("Indoor", cls="label")
-                        doc.span(data.temp_indoor, cls="value")
+                render_card(
+                    "Temperature", {"Outdoor": data.temp, "Indoor": data.temp_indoor}
+                )
 
-                with doc.div(cls="section"):
-                    doc.h2("Wind")
-                    with doc.p():
-                        doc.span("Speed", cls="label")
-                        doc.span(data.wind_speed, cls="value")
-                    with doc.p():
-                        doc.span("Gust", cls="label")
-                        doc.span(data.wind_gust, cls="value")
-                    with doc.p():
-                        doc.span("Direction", cls="label")
-                        doc.span(f"{data.wind_dir}°", cls="value")
-                    with doc.p():
-                        doc.span("Max gust", cls="label")
-                        doc.span(data.max_daily_gust, cls="value")
+                render_card(
+                    "Wind",
+                    {
+                        "Speed": data.wind_speed,
+                        "Gust": data.wind_gust,
+                        "Direction": f"{data.wind_dir}°",
+                        "Max gust": data.max_daily_gust,
+                    },
+                )
 
-                with doc.div(cls="section"):
-                    doc.h2("Pressure")
-                    with doc.p():
-                        doc.span("Relative", cls="label")
-                        doc.span(data.pressure, cls="value")
-                    with doc.p():
-                        doc.span("Absolute", cls="label")
-                        doc.span(data.pressure_absolute, cls="value")
+                render_card(
+                    "Pressure",
+                    {"Relative": data.pressure, "Absolute": data.pressure_absolute},
+                )
 
-                with doc.div(cls="section"):
-                    doc.h2("Humidity")
-                    with doc.p():
-                        doc.span("Outdoor", cls="label")
-                        doc.span(data.humidity, cls="value")
-                    with doc.p():
-                        doc.span("Indoor", cls="label")
-                        doc.span(data.humidity_indoor, cls="value")
+                render_card(
+                    "Humidity",
+                    {"Outdoor": data.humidity, "Indoor": data.humidity_indoor},
+                )
 
-                with doc.div(cls="section"):
-                    doc.h2("Rain")
-                    with doc.p():
-                        doc.span("Hourly rate", cls="label")
-                        doc.span(data.rain_hourly, cls="value")
-                    with doc.p():
-                        doc.span("Daily", cls="label")
-                        doc.span(data.rain_daily, cls="value")
-                    with doc.p():
-                        doc.span("Event", cls="label")
-                        doc.span(data.rain_event, cls="value")
+                render_card(
+                    "Rain",
+                    {
+                        "Hourly rate": data.rain_hourly,
+                        "Daily": data.rain_daily,
+                        "Event": data.rain_event,
+                    },
+                )
 
-                with doc.div(cls="section"):
-                    doc.h2("Solar Radiation")
-                    with doc.p():
-                        doc.span("Radiation", cls="label")
-                        doc.span(data.solar_radiation, cls="value")
-                    with doc.p():
-                        doc.span("UV Index", cls="label")
-                        doc.span(str(data.uv_index), cls="value")
+                render_card(
+                    "Solar Radiation",
+                    {"Radiation": data.solar_radiation, "UV Index": str(data.uv_index)},
+                )
 
             with doc.footer():
-                doc.p("Powered by Zentropi MakeWeb")
+                doc.p("Built with Zentropi MakeWeb")
 
 
 if __name__ == "__main__":
