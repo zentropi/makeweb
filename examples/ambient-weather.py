@@ -4,7 +4,7 @@ app = App()
 app.host = "0.0.0.0"
 app.port = 8022
 app.debug = True
-app.data = None  # type: Weather
+app.data = None
 
 
 class WeatherFromStation:
@@ -376,4 +376,4 @@ def index(doc, request):
 
 
 if __name__ == "__main__":
-    app.run(port=80)
+    app.run()
