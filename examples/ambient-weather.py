@@ -191,7 +191,7 @@ def recv(request):
 
 
 @app.page("/")
-def index(doc, request):
+def index(doc, _request):
     data = app.data
 
     def render_card(title: str, items: dict):
@@ -209,7 +209,7 @@ def index(doc, request):
             doc.title("Weather")
             doc.style(
                 """
-                /* Base styles and variables */
+                /* Theme variables */
                 :root {
                     --primary: #007bff;
                     --secondary: #6c757d;
@@ -217,9 +217,35 @@ def index(doc, request):
                     --info: #17a2b8;
                     --warning: #ffc107;
                     --danger: #dc3545;
-                    --light: #f8f9fa;
-                    --dark: #343a40;
+                    
+                    /* Light theme (default) */
+                    --bg-primary: #f8f9fa;
+                    --bg-secondary: #ffffff;
+                    --text-primary: #343a40;
+                    --text-secondary: #6c757d;
+                    --border-color: #ddd;
+                    --card-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    --divider-color: #eee;
+                    
                     font-size: 16px;
+                }
+
+                /* Dark theme */
+                @media (prefers-color-scheme: dark) {
+                    :root {
+                        --bg-primary: #1a1a1a;
+                        --bg-secondary: #2d2d2d;
+                        --text-primary: #e0e0e0;
+                        --text-secondary: #ababab;
+                        --border-color: #404040;
+                        --card-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                        --divider-color: #404040;
+                    }
+                }
+
+                /* Add smooth transitions */
+                * {
+                    transition: background-color 0.3s ease, color 0.3s ease;
                 }
 
                 /* Reset and box model */
@@ -231,11 +257,12 @@ def index(doc, request):
 
                 /* Layout */
                 body { 
+                    background-color: var(--bg-primary);
+                    color: var(--text-primary);
                     width: 100%;
                     max-width: 1200px;
                     margin: 0 auto;
                     padding: 1rem;
-                    background-color: var(--light);
                 }
 
                 main {
@@ -249,14 +276,13 @@ def index(doc, request):
                 body {
                     font-size: 1rem;
                     font-family: sans-serif;
-                    color: var(--dark);
                 }
 
                 /* Components */
                 header {
                     margin-bottom: 2rem;
                     padding-bottom: 1rem;
-                    border-bottom: 1px solid #ddd;
+                    border-bottom: 1px solid var(--border-color);
                     display: flex;
                     justify-content: space-between;
                     align-items: baseline;
@@ -269,14 +295,14 @@ def index(doc, request):
 
                 header span {
                     font-size: 0.9rem;
-                    color: var(--secondary);
+                    color: var(--text-secondary);
                 }
 
                 .section {
-                    background: white;
+                    background: var(--bg-secondary);
                     padding: 1.5rem;
                     border-radius: 8px;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    box-shadow: var(--card-shadow);
                 }
 
                 .section h2 {
@@ -290,7 +316,7 @@ def index(doc, request):
                     justify-content: space-between;
                     margin-bottom: 0.5rem;
                     padding: 0.5rem 0;
-                    border-bottom: 1px solid #eee;
+                    border-bottom: 1px solid var(--divider-color);
                 }
 
                 .section p:last-child {
@@ -298,7 +324,7 @@ def index(doc, request):
                 }
 
                 .label {
-                    color: var(--secondary);
+                    color: var(--text-secondary);
                 }
 
                 .value {
@@ -308,9 +334,9 @@ def index(doc, request):
                 footer {
                     margin-top: 2rem;
                     padding-top: 1rem;
-                    border-top: 1px solid #ddd;
+                    border-top: 1px solid var(--border-color);
                     text-align: center;
-                    color: var(--secondary);
+                    color: var(--text-secondary);
                     font-size: 0.9rem;
                 }
 
