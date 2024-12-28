@@ -53,18 +53,24 @@ class Weather:
         self.data = data
         # Initialize history tracking
         self.temp_history = WeatherHistory()
+        self.temp_indoor_history = WeatherHistory()
         self.wind_speed_history = WeatherHistory()
         self.pressure_history = WeatherHistory()
         self.humidity_history = WeatherHistory()
+        self.rain_rate_history = WeatherHistory()
+        self.solar_radiation_history = WeatherHistory()
         # Update histories
         self._update_histories()
 
     def _update_histories(self):
         """Update historical data."""
         self.temp_history.add(self._to_celsius(self.data.tempf))
+        self.temp_indoor_history.add(self._to_celsius(self.data.tempinf))
         self.wind_speed_history.add(self._to_kmph(self.data.windspeedmph))
         self.pressure_history.add(self._to_hpa(self.data.baromrelin))
         self.humidity_history.add(float(self.data.humidity))
+        self.rain_rate_history.add(self._to_mm(self.data.hourlyrainin))
+        self.solar_radiation_history.add(float(self.data.solarradiation))
 
     def _to_celsius(self, f: float) -> float:
         """Convert Fahrenheit to Celsius."""
@@ -77,6 +83,10 @@ class Weather:
     def _to_hpa(self, inhg: float) -> float:
         """Convert inHg to hPa."""
         return float(inhg) * 33.8639
+
+    def _to_mm(self, inches: float) -> float:
+        """Convert inches to millimeters."""
+        return float(inches) * 25.4
 
     def fahrenheit_to_celsius(self, f: float) -> str:
         """Convert Fahrenheit to Celsius."""
@@ -433,8 +443,11 @@ def index(doc, _request):
                     "Temperature",
                     {"Outdoor": data.temp, "Indoor": data.temp_indoor},
                     (
-                        data.temp_history.values,
-                        {"label": "Outdoor", "line_color": "#ff7c7c"},
+                        [data.temp_history.values, data.temp_indoor_history.values],
+                        {
+                            "label": ["Outdoor", "Indoor"],
+                            "line_color": ["#ff7c7c", "#ffa07c"],
+                        },
                     ),
                 )
 
@@ -473,11 +486,19 @@ def index(doc, _request):
                         "Daily": data.rain_daily,
                         "Event": data.rain_event,
                     },
+                    (
+                        data.rain_rate_history.values,
+                        {"label": "Hourly rate", "line_color": "#7ca9ff"},
+                    ),
                 )
 
                 render_card(
                     "Solar Radiation",
                     {"Radiation": data.solar_radiation, "UV Index": str(data.uv_index)},
+                    (
+                        data.solar_radiation_history.values,
+                        {"label": "Radiation", "line_color": "#ffeb3b"},
+                    ),
                 )
 
             with doc.footer():
