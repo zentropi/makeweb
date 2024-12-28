@@ -127,6 +127,18 @@ class HtmlBuilder:
 
         return tag_method
 
+    def inline(self, element, inline_path):
+        """Read CSS file and add it as an inline style element"""
+        try:
+            with open(inline_path, "r") as f:
+                inline_content = f.read()
+            inline_element = Element(element, parent=self.current)
+            inline_element.add_child(inline_content)
+            self.current.add_child(inline_element)
+        except FileNotFoundError:
+            print(f"Warning: Inline file not found: {inline_path}")
+        return self
+
     def markdown(self, text):
         """Render markdown text and add it to the current element"""
         from .markdown import Markdown
