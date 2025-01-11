@@ -1,4 +1,4 @@
-add_library("unix-ffi", "$(MPY_LIB_DIR)/unix-ffi")
+add_library("unix-ffi", "$(MPY_LIB_DIR)/unix-ffi", prepend=True)
 
 require("mip-cmdline")
 require("ssl")
