@@ -1,0 +1,4 @@
+42c42
+<     return open("libc", 6)
+---
+>     return open("libc", 7)

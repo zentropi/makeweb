@@ -97,4 +97,8 @@ cp -r "upstream/websockets" "lib/" 2>/dev/null || echo "Failed to copy to lib/we
 echo "  websockets"
 echo ""
 
+echo "Patching lib/ffilib.py..."
+echo "See: https://github.com/micropython/micropython-lib/issues/962"
+patch lib/ffilib.py tools/ffilib.diff
+
 echo "Done."
